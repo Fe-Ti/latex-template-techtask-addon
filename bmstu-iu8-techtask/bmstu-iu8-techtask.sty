@@ -1,0 +1,19 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{bmstu-iu8-techtask}[2024/11/30 V0.1]
+
+\RequirePackage{BMSTU-IU8}
+
+\@ifclassloaded{practice}
+  {
+  \gdef\fillTask{Qwerty \pagebreak}
+  }
+  {}
+
+\@ifclassloaded{ordinary}
+  {
+  \gdef\fillTask{OMG \pagebreak}
+  }
+  {}
+
+
+\newcommand{\techTask}{\fillTask}
