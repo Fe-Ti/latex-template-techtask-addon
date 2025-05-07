@@ -27,67 +27,56 @@
 
 \newcounter{pagebackupctr}
 
-\fancypagestyle{techtask}{
-  \fancyfoot[L]{\fontsize{10pt}{14pt}\selectfont\@italicfooter
-Является обязательным листом отчёта по практике. Документ не должен содержать информацию, отнесённую в установленном порядке к государственной тайне РФ.}
-  \renewcommand{\headrulewidth}{0pt}
-  \fancyhead{}
+
+\providecommand{\@ensuredby}{qwerty}
+\newcommand{\ensuredby}[1]{\gdef\@ensuredby{qwerty}}
+
+\providecommand{\@facultydepartment}{\fontsize{12pt}{14pt} \selectfont \noindent
+    \begin{tabular}{lp{0.7\linewidth}}
+        ФАКУЛЬТЕТ \tabto{3cm} & \@faculty \\
+        КАФЕДРА \tabto{3cm} & \@department
+    \end{tabular}}
+\newcommand{\nofacdep}{\gdef\@facultydepartment{~}}
+
+
+\newcommand{\maketaskBMSTUHeader}{
+    \noindent\begin{minipage}{0.05\textwidth}
+        \includegraphics[scale=0.4]{inc/bmstu.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.85\textwidth}\raggedleft
+        \begin{center}
+            \fontsize{10pt}{0.3\baselineskip}\selectfont 
+            \textbf{Министерство науки и высшего образования 
+                Российской Федерации \\ 
+                Федеральное государственное автономное образовательное 
+                учреждение \\ 
+                высшего образования \\ 
+                <<Московский государственный технический университет \\ 
+                имени Н. Э. Баумана \\ 
+                (национальный исследовательский университет)>> \\ 
+                (МГТУ им. Н. Э. Баумана)
+            }
+        \end{center}
+    \end{minipage}
+    \begin{center}
+        \fontsize{12pt}{0.1\baselineskip}\selectfont
+        \noindent\makebox[\linewidth]{\rule{\textwidth}{2pt}} 
+        \makebox[\linewidth]{\rule{\textwidth}{1pt}}
+    \end{center}
+    \@facultydepartment
 }
 
-%\newcommand{\fillDiplomaTechTask}{Undefined}
-%\newcommand{\fillResearchTechTask}{Undefined}
+\newcommand{\fillOrdinaryTechTask}{
+	\@ensuredby
 
-\newcommand{\practicetasks}[1]{\gdef\@practicetasks{#1}}
-\def\@practicetasks{\@latex@error@no@line{No \noexpand\practiceType given}}
-
-\def\datedue#1{\gdef\@datedue{#1}}
-\def\@datedue{\@latex@warning@no@line{No \noexpand\datedue given}}
- 
-\def\datestart#1{\gdef\@datestart{#1}}
-\def\@datestart{\@latex@warning@no@line{No \noexpand\datestart given}}
-  
-\newcommand{\fillPracticeTechTask}{
-		\vfill
-		
-		\noindent\begin{center}
-			\centering
-			{\bfseries\fontsize{18pt}{25pt}\selectfont ИНДИВИДУАЛЬНОЕ~ЗАДАНИЕ~НА~ПРАКТИКУ}
-		\end{center}
-		
-		\bigskip
-	
-		{\fontsize{12pt}{15pt}\selectfont \noindent
-			Название предприятия: \@practiceBase \\
-			Сроки практики: ~с~ \@datestart ~по~ \@datedue \\
-			Специальность/направление: \@speciality \\
-			Специализация/профиль: \@specialization \\
-			За время прохождения практики студенту надлежит согласно программе практики:\\
-			\@practicetasks
-		}
-	
-		\vfill
-	
-		{\fontsize{12pt}{15pt}\selectfont \noindent
-		\begin{tabular}{p{0.6\linewidth}c}
-		
-			Руководитель от кафедры:&\\
-			\@departmentSupervisor &  \makeUlineStack[0.3\linewidth]{~}{(Подпись, дата)} \\
-			
-			Руководитель от предприятия:&\\
-			\@supervisor &  \makeUlineStack[0.3\linewidth]{~}{(Подпись, дата)} \\		
-			Студент: группа \@group, л.д. \@profile &\\
-			\@student & \makeUlineStack[0.3\linewidth]{~}{(Подпись, дата)} \\
-			
-		\end{tabular}
-		}
-		
-		\vfill
-		\clearpage
+	\noindent\begin{center}
+		\centering
+		{\bfseries\fontsize{18pt}{25pt}\selectfont ЗАДАНИЕ}
+	\end{center}
 }
 
-%\newcommand{\fillOrdinaryTechTask}{Undefined}
-
-\def\fillTechTask{\@latex@warning@no@line{Tech Task Package: Unsupported documentclass option. Change document class option or remove \noexpand\techTask macro from document.}}
+\providecommand{\fillTechTask}{\@latex@error@no@line{Tech Task Package: Unsupported documentclass option. Change document class option or remove \noexpand\techTask macro from document.}}
 
 %\DeclareOption{diploma}{
 %    \def\fillTechTask{\fillDiplomaTechTask}
@@ -95,21 +84,31 @@
 %\DeclareOption{research}{
 %    \def\fillTechTask{\fillResearchTechTask}
 %}
-\DeclareOption{practice}{
-	\def\fillTechTask{\fillPracticeTechTask}
-}
-%\DeclareOption{ordinary}{
-%	\def\fillTechTask{\fillOrdinaryTechTask}
+%\DeclareOption{practice}{
+%	\def\fillTechTask{\fillPracticeTechTask}
 %}
+\DeclareOption{ordinary}{
+	\gdef\fillTechTask{\fillOrdinaryTechTask}
+}
 
 \ProcessOptions
 
-\newcommand{\techTask}{
+\providecommand{\@footercontents}{~}
+\newcommand{\footercontents}[1]{\gdef\@footercontents{#1}}
+
+\fancypagestyle{techtask}{
+  \fancyfoot[L]{\fontsize{10pt}{14pt}\selectfont \@footercontents}
+  \renewcommand{\headrulewidth}{0pt}
+  \fancyhead{}
+}
+
+
+\newcommand{\techtask}{
     \thispagestyle{techtask}
     \setcounter{pagebackupctr}{\thepage}
     \stepcounter{pagebackupctr}
     \pagenumbering{gobble}
-	\makeBMSTUHeader
+	\maketaskBMSTUHeader
 	\fillTechTask
 	\clearpage
 	\pagenumbering{arabic}
