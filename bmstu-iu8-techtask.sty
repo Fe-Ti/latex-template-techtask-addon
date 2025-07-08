@@ -28,8 +28,32 @@
 \newcounter{pagebackupctr}
 
 
-\providecommand{\@ensuredby}{qwerty}
-\newcommand{\ensuredby}[1]{\gdef\@ensuredby{qwerty}}
+%%%%%%%%%%%%%%%%%%%%%%%
+% Common / Misc Stuff %
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\noitalicfooter}{\gdef\@italicfooter{}}
+\providecommand{\@italicfooter}{\itshape}
+
+\newcommand{\strjustify}[1]{\StrCut{#1}{\\}\csA\csB \StrSubstitute{\csA}{\space}{\hfill\space}\csB}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Ordinary task
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\providecommand{\@ensuredby}{\@latex@error@no@line{Fill mandatory \noexpand\ensuredby{index}{full name}{day}{month}{year}}}
+\newcommand{\ensuredby}[5]{\gdef\@ensuredby{
+\begin{raggedleft}
+УТВЕРЖДАЮ \\
+Заведующий кафедрой \makeUlineStack[\widthof{#1}]{#1}{(Индекс)} \\
+\makeUlineStack[3cm]{~}{~} \makeUlineStack[\widthof{#2}]{#2}{(И. О. Фамилия)} \\
+<<\makeUlineStack[\widthof{#3}]{#3}{~}>> \makeUlineStack[\widthof{#4}]{#4}{~}  \makeUlineStack[\widthof{#5}]{#5}{~} г. \\
+\end{raggedleft}
+}}
+\newcommand{\noensuredby}{\gdef\@ensuredby{~}}
 
 \providecommand{\@facultydepartment}{\fontsize{12pt}{14pt} \selectfont \noindent
     \begin{tabular}{lp{0.7\linewidth}}
@@ -38,15 +62,21 @@
     \end{tabular}}
 \newcommand{\nofacdep}{\gdef\@facultydepartment{~}}
 
+\newlength{\BMSTUheadertextwidth}
+\providecommand{\@bmstulogo}{ \setlength{\BMSTUheadertextwidth}{0.9\textwidth} }
+
+\providecommand{\@bmstulogoimg}{\includegraphics[scale=0.4]{inc/bmstu.png}}
+\newcommand{\customlogo}[2][0.4]{\gdef\@bmstulogoimg{\includegraphics[scale=#1]{#2}}}
+
+\newcommand{\useunilogo}{\setlength{\BMSTUheadertextwidth}{0.85\textwidth}\gdef\@bmstulogo{\noindent\begin{minipage}{0.05\textwidth}
+        \@bmstulogoimg
+    \end{minipage}\hfill}}
 
 \newcommand{\maketaskBMSTUHeader}{
-    \noindent\begin{minipage}{0.05\textwidth}
-        \includegraphics[scale=0.4]{inc/bmstu.png}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.85\textwidth}\raggedleft
+    \@bmstulogo
+    \begin{minipage}{\BMSTUheadertextwidth}\raggedleft
         \begin{center}
-            \fontsize{10pt}{0.3\baselineskip}\selectfont 
+            \fontsize{12pt}{0.3\baselineskip}\selectfont 
             \textbf{Министерство науки и высшего образования 
                 Российской Федерации \\ 
                 Федеральное государственное автономное образовательное 
@@ -67,14 +97,89 @@
     \@facultydepartment
 }
 
+\newcommand{\overrideBMSTUHeader}{\gdef\makeBMSTUHeader{\maketaskBMSTUHeader}}
+
 \newcommand{\fillOrdinaryTechTask}{
 	\@ensuredby
 
 	\noindent\begin{center}
 		\centering
-		{\bfseries\fontsize{18pt}{25pt}\selectfont ЗАДАНИЕ}
+		{\bfseries\fontsize{18pt}{25pt}\selectfont ЗАДАНИЕ} \\
+		{\bfseries\fontsize{18pt}{25pt}\selectfont на выполнение курсовой работы}
 	\end{center}
+\noindent по дисциплине
 }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Practice task
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\practicetasks}[1]{\gdef\@practicetasks{#1}}
+\def\@practicetasks{\@latex@error@no@line{No \noexpand\practicetasks given}}
+
+\def\datedue#1{\gdef\@datedue{#1}}
+\def\@datedue{\@latex@warning@no@line{No \noexpand\datedue given}}
+ 
+\def\datestart#1{\gdef\@datestart{#1}}
+\def\@datestart{\@latex@warning@no@line{No \noexpand\datestart given}}
+
+\def\practiceKind#1{\gdef\@practiceKind{#1}}
+\def\@practiceKind{\@latex@warning@no@line{No \noexpand\practiceKind given}}
+
+\def\practiceBase#1{\gdef\@practiceBase{#1}}
+\def\@practiceBase{\@latex@warning@no@line{No \noexpand\practiceBase given}}
+
+\def\practiceType#1{\gdef\@practiceType{#1}}
+\def\@practiceType{\@latex@warning@no@line{No \noexpand\practiceType given}}
+
+\def\departmentSupervisor#1{\gdef\@departmentSupervisor{#1}}
+\def\@departmentSupervisor{\@latex@warning@no@line{No \noexpand\departmentSupervisor given}}
+
+  
+\newcommand{\fillPracticeTechTask}{
+		\vfill
+		
+		\noindent\begin{center}
+			\centering
+			{\bfseries\fontsize{18pt}{25pt}\selectfont ИНДИВИДУАЛЬНОЕ~ЗАДАНИЕ~НА~ПРАКТИКУ}
+		\end{center}
+		
+		\bigskip
+	
+		{\fontsize{12pt}{15pt}\selectfont \noindent
+			Название предприятия: \@practiceBase \\
+			Сроки практики: ~с~ \@datestart ~по~ \@datedue \\
+			Специальность/направление: \@speciality \\
+			Специализация/профиль: \@specialization \\
+			За время прохождения практики студенту надлежит согласно программе практики:\\
+			\@practicetasks
+		}
+	
+		\vfill
+	
+		{\fontsize{12pt}{15pt}\selectfont \noindent
+		\begin{tabular}{p{0.6\linewidth}c}
+		
+			Руководитель от кафедры:&\\
+			\@departmentSupervisor &  \makeUlineStack[0.3\linewidth]{~}{(Подпись, дата)} \\
+			
+			Руководитель от предприятия:&\\
+			\@supervisor &  \makeUlineStack[0.3\linewidth]{~}{(Подпись, дата)} \\		
+			Студент: группа \@group, л.д. \@profile &\\
+			\@student & \makeUlineStack[0.3\linewidth]{~}{(Подпись, дата)} \\
+			
+		\end{tabular}
+		}
+		
+		\vfill
+		\clearpage
+}
+
+
+%\newcommand{\fillDiplomaTechTask}{Undefined}
+%\newcommand{\fillResearchTechTask}{Undefined}
 
 \providecommand{\fillTechTask}{\@latex@error@no@line{Tech Task Package: Unsupported documentclass option. Change document class option or remove \noexpand\techTask macro from document.}}
 
@@ -84,17 +189,19 @@
 %\DeclareOption{research}{
 %    \def\fillTechTask{\fillResearchTechTask}
 %}
-%\DeclareOption{practice}{
-%	\def\fillTechTask{\fillPracticeTechTask}
-%}
-\DeclareOption{ordinary}{
+
+\providecommand{\@footercontents}{~}
+\newcommand{\footercontents}[1]{\gdef\@footercontents{#1}}
+
+\DeclareOption{practice}{
+	\renewcommand{\@footercontents}{Является обязательным листом отчёта по практике. Документ не должен содержать информацию, отнесённую в установленном порядке к государственной тайне РФ.}
+	\def\fillTechTask{\fillPracticeTechTask}
+}
+\DeclareOption{manualtt}{
 	\gdef\fillTechTask{\fillOrdinaryTechTask}
 }
 
 \ProcessOptions
-
-\providecommand{\@footercontents}{~}
-\newcommand{\footercontents}[1]{\gdef\@footercontents{#1}}
 
 \fancypagestyle{techtask}{
   \fancyfoot[L]{\fontsize{10pt}{14pt}\selectfont \@footercontents}
