@@ -79,8 +79,8 @@
             \fontsize{12pt}{0.3\baselineskip}\selectfont 
             \textbf{Министерство науки и высшего образования 
                 Российской Федерации \\ 
-                Федеральное государственное автономное образовательное 
-                учреждение \\ 
+                Федеральное государственное автономное образовательное \\ 
+                учреждение 
                 высшего образования \\ 
                 <<Московский государственный технический университет \\ 
                 имени Н. Э. Баумана \\ 
@@ -137,7 +137,48 @@
 \def\departmentSupervisor#1{\gdef\@departmentSupervisor{#1}}
 \def\@departmentSupervisor{\@latex@warning@no@line{No \noexpand\departmentSupervisor given}}
 
-  
+
+\newcommand\fillPracticeTitle{
+	
+	\vfill
+	
+	\noindent\begin{center}
+		\centering
+		{\bfseries\fontsize{16pt}{20pt}\selectfont ОТЧЁТ~ПО~\@practiceKind~ПРАКТИКЕ}
+	\end{center}
+	
+	\bigskip
+
+	{\fontsize{12pt}{15pt}\selectfont \noindent
+		Тип пратики: \@practiceType \\
+		Название предприятия: \@practiceBase \\
+	}
+
+	\vfill
+
+	{\fontsize{12pt}{15pt}\selectfont \noindent
+	\begin{tabular}{p{0.6\linewidth}c}
+	
+		Студент: группа \@group, л.д. \@profile &\\
+		\@studentFullName & \makeUlineStack[0.3\linewidth]{~}{(Подпись, дата)} \\
+		
+		Руководитель от предприятия:&\\
+		\@supervisor &  \makeUlineStack[0.3\linewidth]{~}{(Подпись, дата)} \\		
+		Руководитель от кафедры:&\\
+		\@departmentSupervisor &  \makeUlineStack[0.3\linewidth]{~}{(Подпись, дата)} \\
+	\end{tabular}
+	}
+
+	\vfill
+	
+	\enablescore
+	
+	\vfill 
+	
+	\clearpage
+}
+
+
 \newcommand{\fillPracticeTechTask}{
 		\vfill
 		
@@ -153,7 +194,8 @@
 			Сроки практики: ~с~ \@datestart ~по~ \@datedue \\
 			Специальность/направление: \@speciality \\
 			Специализация/профиль: \@specialization \\
-			За время прохождения практики студенту надлежит согласно программе практики:\\
+
+			{ \noindent За время прохождения практики студенту надлежит согласно программе практики:}
 			\@practicetasks
 		}
 	
@@ -163,13 +205,14 @@
 		\begin{tabular}{p{0.6\linewidth}c}
 		
 			Руководитель от кафедры:&\\
-			\@departmentSupervisor &  \makeUlineStack[0.3\linewidth]{~}{(Подпись, дата)} \\
+			\@departmentSupervisor &  \makeUlineStack[0.3\linewidth]{~}{(Подпись, дата)} \\\\
 			
 			Руководитель от предприятия:&\\
-			\@supervisor &  \makeUlineStack[0.3\linewidth]{~}{(Подпись, дата)} \\		
+			\@supervisor &  \makeUlineStack[0.3\linewidth]{~}{(Подпись, дата)} \\\\
+
 			Студент: группа \@group, л.д. \@profile &\\
-			\@student & \makeUlineStack[0.3\linewidth]{~}{(Подпись, дата)} \\
-			
+			\@studentFullName & \makeUlineStack[0.3\linewidth]{~}{(Подпись, дата)} \\
+
 		\end{tabular}
 		}
 		
@@ -195,6 +238,7 @@
 
 \DeclareOption{practice}{
 	\renewcommand{\@footercontents}{Является обязательным листом отчёта по практике. Документ не должен содержать информацию, отнесённую в установленном порядке к государственной тайне РФ.}
+	\newcommand{\overrideTitlePage}{\renewcommand{\fillTitle}{\fillPracticeTitle}}
 	\def\fillTechTask{\fillPracticeTechTask}
 }
 \DeclareOption{manualtt}{
@@ -215,7 +259,7 @@
     \setcounter{pagebackupctr}{\thepage}
     \stepcounter{pagebackupctr}
     \pagenumbering{gobble}
-	\maketaskBMSTUHeader
+	\makeBMSTUHeader
 	\fillTechTask
 	\clearpage
 	\pagenumbering{arabic}
